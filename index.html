@@ -8,17 +8,14 @@
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body { background: #080808; color: #fff; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; min-height: 100vh; }
 
-  /* SIDEBAR */
   .sidebar { position: fixed; left: 0; top: 0; width: 220px; height: 100vh; background: #0f0f0f; border-right: 1px solid #1a1a1a; padding: 24px 16px; display: flex; flex-direction: column; gap: 4px; z-index: 10; }
   .logo { font-size: 18px; font-weight: 800; color: #fff; margin-bottom: 24px; display: flex; align-items: center; gap: 8px; }
   .logo span { color: #6366f1; }
   .nav-item { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 8px; font-size: 13px; color: #555; cursor: pointer; transition: all .15s; }
   .nav-item:hover { background: #161616; color: #fff; }
   .nav-item.active { background: #1a1a2e; color: #6366f1; }
-  .nav-icon { font-size: 16px; }
   .sidebar-section { font-size: 10px; color: #333; text-transform: uppercase; letter-spacing: 1.5px; padding: 16px 12px 6px; }
 
-  /* MAIN */
   .main { margin-left: 220px; padding: 32px; }
   .topbar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 32px; }
   .page-title { font-size: 24px; font-weight: 700; }
@@ -27,44 +24,35 @@
   @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.4} }
   .live-badge { background: #0f1f0f; border: 1px solid #1a3a1a; color: #22c55e; font-size: 11px; padding: 4px 10px; border-radius: 20px; display: flex; align-items: center; }
 
-  /* METRICS GRID */
   .metrics { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 28px; }
   .metric { background: #0f0f0f; border: 1px solid #1a1a1a; border-radius: 12px; padding: 20px; }
   .metric-label { font-size: 11px; color: #444; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px; }
   .metric-value { font-size: 32px; font-weight: 800; color: #fff; line-height: 1; }
   .metric-sub { font-size: 12px; color: #333; margin-top: 6px; }
   .metric-change { font-size: 12px; margin-top: 8px; }
-  .up { color: #22c55e; }
-  .down { color: #ef4444; }
   .neutral { color: #eab308; }
+  .up { color: #22c55e; }
 
-  /* GRID 2 COL */
   .grid2 { display: grid; grid-template-columns: 1.5fr 1fr; gap: 16px; margin-bottom: 28px; }
-  .grid3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; margin-bottom: 28px; }
-
-  /* CARDS */
   .card { background: #0f0f0f; border: 1px solid #1a1a1a; border-radius: 12px; padding: 20px; }
-  .card-title { font-size: 12px; color: #444; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 16px; display: flex; align-items: center; justify-content: space-between; }
-  .card-title span { color: #6366f1; font-size: 11px; cursor: pointer; text-transform: none; letter-spacing: 0; }
+  .card-title { font-size: 12px; color: #444; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 16px; }
 
-  /* TABLE */
   table { width: 100%; border-collapse: collapse; }
-  th { font-size: 11px; color: #333; font-weight: 500; text-align: left; padding: 8px 10px; border-bottom: 1px solid #161616; text-transform: uppercase; letter-spacing: .5px; }
+  th { font-size: 11px; color: #333; font-weight: 500; text-align: left; padding: 8px 10px; border-bottom: 1px solid #161616; text-transform: uppercase; }
   td { padding: 11px 10px; font-size: 13px; border-bottom: 1px solid #111; }
   tr:last-child td { border-bottom: none; }
   tr:hover td { background: #111; }
 
-  /* BADGES */
   .badge { display: inline-flex; align-items: center; padding: 3px 8px; border-radius: 20px; font-size: 11px; font-weight: 600; }
-  .badge-green { background: #0f2a0f; color: #22c55e; }
-  .badge-red { background: #2a0f0f; color: #ef4444; }
   .badge-yellow { background: #2a200f; color: #eab308; }
-  .badge-blue { background: #0f1a2a; color: #60a5fa; }
-  .badge-purple { background: #1a0f2a; color: #a78bfa; }
+  .badge-red { background: #2a0f0f; color: #ef4444; }
+  .badge-green { background: #0f2a0f; color: #22c55e; }
+
+  .section-title { font-size: 14px; font-weight: 600; color: #888; margin-bottom: 16px; margin-top: 4px; }
 
   /* TASK BOARD */
   .board { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 28px; }
-  .column { background: #0f0f0f; border: 1px solid #1a1a1a; border-radius: 12px; padding: 16px; }
+  .column { background: #0f0f0f; border: 1px solid #1a1a1a; border-radius: 12px; padding: 16px; min-height: 300px; }
   .col-header { font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: #444; margin-bottom: 14px; display: flex; align-items: center; justify-content: space-between; }
   .col-count { background: #1a1a1a; color: #555; font-size: 11px; padding: 2px 7px; border-radius: 10px; }
   .task { background: #141414; border: 1px solid #1e1e1e; border-radius: 8px; padding: 12px; margin-bottom: 8px; }
@@ -75,8 +63,8 @@
   .tag-crm { background: #0f2a1a; color: #4ade80; }
   .tag-research { background: #2a1a0f; color: #fb923c; }
   .tag-ops { background: #1a0f1a; color: #c084fc; }
+  .task-date { font-size: 10px; color: #333; margin-left: auto; }
 
-  /* CONNECTIONS */
   .conn-row { display: flex; align-items: center; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid #111; }
   .conn-row:last-child { border-bottom: none; }
   .conn-name { font-size: 13px; color: #ccc; display: flex; align-items: center; gap: 10px; }
@@ -85,53 +73,43 @@
   .conn-warn { background: #eab308; }
   .conn-status { font-size: 11px; color: #444; }
 
-  /* DIVIDER */
-  .section-title { font-size: 14px; font-weight: 600; color: #888; margin-bottom: 16px; margin-top: 4px; }
-
-  /* CRON */
   .cron-item { display: flex; align-items: center; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid #111; }
   .cron-item:last-child { border-bottom: none; }
   .cron-name { font-size: 13px; color: #ccc; }
   .cron-time { font-size: 11px; color: #555; margin-top: 2px; }
   .cron-next { font-size: 11px; color: #6366f1; }
+
+  #last-updated { font-size: 11px; color: #333; margin-top: 8px; }
 </style>
 </head>
 <body>
 
-<!-- SIDEBAR -->
 <div class="sidebar">
   <div class="logo">⚡ <span>Max</span></div>
-
   <div class="sidebar-section">General</div>
-  <div class="nav-item active"><span class="nav-icon">🏠</span> Overview</div>
-  <div class="nav-item"><span class="nav-icon">📋</span> Task Board</div>
-  <div class="nav-item"><span class="nav-icon">📊</span> SA Marketing</div>
-  <div class="nav-item"><span class="nav-icon">👥</span> Clientes</div>
-
+  <div class="nav-item active">🏠 Overview</div>
+  <div class="nav-item">📋 Task Board</div>
+  <div class="nav-item">📊 SA Marketing</div>
+  <div class="nav-item">👥 Clientes</div>
   <div class="sidebar-section">Herramientas</div>
-  <div class="nav-item"><span class="nav-icon">🔗</span> Conexiones</div>
-  <div class="nav-item"><span class="nav-icon">⏰</span> Crons</div>
-  <div class="nav-item"><span class="nav-icon">🧠</span> Memoria</div>
-
+  <div class="nav-item">🔗 Conexiones</div>
+  <div class="nav-item">⏰ Crons</div>
+  <div class="nav-item">🧠 Memoria</div>
   <div style="margin-top:auto; padding: 12px; background:#111; border-radius:8px; font-size:11px; color:#333;">
     <div style="color:#555; margin-bottom:4px;">Modelo activo</div>
     claude-sonnet-4-6
   </div>
 </div>
 
-<!-- MAIN -->
 <div class="main">
-
-  <!-- TOPBAR -->
   <div class="topbar">
     <div>
       <div class="page-title">Mission Control</div>
       <div class="page-sub">SA-Dental · Julián Santucho</div>
     </div>
-    <div class="live-badge"><span class="status-dot"></span> Live · Lun 2 Mar 2026</div>
+    <div class="live-badge"><span class="status-dot"></span> Live · <span id="fecha"></span></div>
   </div>
 
-  <!-- METRICS -->
   <div class="metrics">
     <div class="metric">
       <div class="metric-label">Spend Hoy</div>
@@ -159,74 +137,21 @@
     </div>
   </div>
 
-  <!-- TASK BOARD -->
+  <!-- TASK BOARD DINÁMICO -->
   <div class="section-title">📋 Task Board</div>
-  <div class="board">
-    <div class="column">
-      <div class="col-header">Pendiente <span class="col-count">4</span></div>
-
-      <div class="task">
-        <div class="task-title">Conectar Meta Ads API para leads en tiempo real</div>
-        <div class="task-meta"><span class="task-tag tag-ads">Ads</span></div>
-      </div>
-      <div class="task">
-        <div class="task-title">Hostear dashboard en Vercel/Netlify</div>
-        <div class="task-meta"><span class="task-tag tag-ops">Ops</span></div>
-      </div>
-      <div class="task">
-        <div class="task-title">Analizar funnel completo Spanish Smile</div>
-        <div class="task-meta"><span class="task-tag tag-research">Research</span></div>
-      </div>
-      <div class="task">
-        <div class="task-title">Integrar GHL API para leads en reporte diario</div>
-        <div class="task-meta"><span class="task-tag tag-crm">CRM</span></div>
-      </div>
+  <div id="last-updated"></div>
+  <div class="board" id="board">
+    <div class="column" id="col-pendiente">
+      <div class="col-header">Pendiente <span class="col-count" id="cnt-pendiente">0</span></div>
     </div>
-
-    <div class="column">
-      <div class="col-header">En progreso <span class="col-count">3</span></div>
-
-      <div class="task">
-        <div class="task-title">Research competidores hispanos dental/chiro/medspa USA</div>
-        <div class="task-meta"><span class="task-tag tag-research">Research</span></div>
-      </div>
-      <div class="task">
-        <div class="task-title">Reporte diario SA Marketing (cron activo)</div>
-        <div class="task-meta"><span class="task-tag tag-ads">Ads</span></div>
-      </div>
-      <div class="task">
-        <div class="task-title">Fórmulas CRM Sheet — leads por campaña</div>
-        <div class="task-meta"><span class="task-tag tag-crm">CRM</span></div>
-      </div>
+    <div class="column" id="col-en-proceso">
+      <div class="col-header">En Proceso <span class="col-count" id="cnt-en-proceso">0</span></div>
     </div>
-
-    <div class="column">
-      <div class="col-header">Completado <span class="col-count">5</span></div>
-
-      <div class="task">
-        <div class="task-title">✓ Conectar Windsor.ai API</div>
-        <div class="task-meta"><span class="task-tag tag-ads">Ads</span></div>
-      </div>
-      <div class="task">
-        <div class="task-title">✓ Setup cron reporte diario 6AM ARG</div>
-        <div class="task-meta"><span class="task-tag tag-ops">Ops</span></div>
-      </div>
-      <div class="task">
-        <div class="task-title">✓ Acceso CRM Google Sheets</div>
-        <div class="task-meta"><span class="task-tag tag-crm">CRM</span></div>
-      </div>
-      <div class="task">
-        <div class="task-title">✓ Análisis campañas SA Marketing 7d</div>
-        <div class="task-meta"><span class="task-tag tag-ads">Ads</span></div>
-      </div>
-      <div class="task">
-        <div class="task-title">✓ Identificar competidor top: Spanish Smile</div>
-        <div class="task-meta"><span class="task-tag tag-research">Research</span></div>
-      </div>
+    <div class="column" id="col-hecho">
+      <div class="col-header">Hecho <span class="col-count" id="cnt-hecho">0</span></div>
     </div>
   </div>
 
-  <!-- CAMPAÑAS + CONEXIONES -->
   <div class="grid2">
     <div class="card">
       <div class="card-title">📊 Campañas SA Marketing — Hoy</div>
@@ -242,27 +167,10 @@
 
     <div class="card">
       <div class="card-title">🔗 Conexiones</div>
-      <div class="conn-row">
-        <div class="conn-name"><span class="conn-dot conn-ok"></span>Windsor.ai</div>
-        <div class="conn-status">Conectado ✓</div>
-      </div>
-      <div class="conn-row">
-        <div class="conn-name"><span class="conn-dot conn-ok"></span>CRM Google Sheets</div>
-        <div class="conn-status">Conectado ✓</div>
-      </div>
-      <div class="conn-row">
-        <div class="conn-name"><span class="conn-dot conn-warn"></span>Meta Ads API</div>
-        <div class="conn-status">Pendiente token</div>
-      </div>
-      <div class="conn-row">
-        <div class="conn-name"><span class="conn-dot conn-warn"></span>GHL API</div>
-        <div class="conn-status">Pendiente acceso</div>
-      </div>
-      <div class="conn-row">
-        <div class="conn-name"><span class="conn-dot conn-warn"></span>Chrome / Browser</div>
-        <div class="conn-status">No disponible</div>
-      </div>
-
+      <div class="conn-row"><div class="conn-name"><span class="conn-dot conn-ok"></span>Windsor.ai</div><div class="conn-status">Conectado ✓</div></div>
+      <div class="conn-row"><div class="conn-name"><span class="conn-dot conn-ok"></span>CRM Google Sheets</div><div class="conn-status">Conectado ✓</div></div>
+      <div class="conn-row"><div class="conn-name"><span class="conn-dot conn-warn"></span>Meta Ads API</div><div class="conn-status">Pendiente token</div></div>
+      <div class="conn-row"><div class="conn-name"><span class="conn-dot conn-warn"></span>GHL API</div><div class="conn-status">Pendiente acceso</div></div>
       <div style="margin-top:20px;">
         <div class="card-title">⏰ Crons Activos</div>
         <div class="cron-item">
@@ -275,7 +183,49 @@
       </div>
     </div>
   </div>
-
 </div>
+
+<script>
+  // Fecha actual
+  const now = new Date();
+  document.getElementById('fecha').textContent = now.toLocaleDateString('es-AR', {weekday:'short', day:'numeric', month:'short', year:'numeric'});
+
+  // Tag colors
+  const tagClass = { ads: 'tag-ads', crm: 'tag-crm', research: 'tag-research', ops: 'tag-ops' };
+
+  // Load tasks from tasks.json
+  fetch('./tasks.json?v=' + Date.now())
+    .then(r => r.json())
+    .then(data => {
+      const tasks = data.tasks;
+      const cols = { 'pendiente': [], 'en-proceso': [], 'hecho': [] };
+
+      tasks.forEach(t => {
+        if (cols[t.status] !== undefined) cols[t.status].push(t);
+      });
+
+      Object.keys(cols).forEach(status => {
+        const col = document.getElementById('col-' + status);
+        document.getElementById('cnt-' + status).textContent = cols[status].length;
+
+        cols[status].forEach(t => {
+          const div = document.createElement('div');
+          div.className = 'task';
+          div.innerHTML = `
+            <div class="task-title">${status === 'hecho' ? '✓ ' : ''}${t.title}</div>
+            <div class="task-meta">
+              <span class="task-tag ${tagClass[t.tag] || ''}">${t.tag}</span>
+              <span class="task-date">${t.created}</span>
+            </div>`;
+          col.appendChild(div);
+        });
+      });
+
+      document.getElementById('last-updated').textContent = 'Última actualización: ' + now.toLocaleTimeString('es-AR');
+    })
+    .catch(() => {
+      document.getElementById('last-updated').textContent = 'Error cargando tareas';
+    });
+</script>
 </body>
 </html>
