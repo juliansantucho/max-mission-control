@@ -1,60 +1,14 @@
 {
   "tasks": [
-    {
-      "id": "t001",
-      "title": "Conectar Meta Ads API para leads en tiempo real",
-      "status": "pendiente",
-      "tag": "ads",
-      "created": "2026-03-02"
-    },
-    {
-      "id": "t002",
-      "title": "Integrar GHL API para leads en reporte diario",
-      "status": "pendiente",
-      "tag": "crm",
-      "created": "2026-03-02"
-    },
-    {
-      "id": "t003",
-      "title": "Hostear dashboard en Vercel",
-      "status": "hecho",
-      "tag": "ops",
-      "created": "2026-03-02"
-    },
-    {
-      "id": "t004",
-      "title": "Análisis competidor Spanish Smile",
-      "status": "hecho",
-      "tag": "research",
-      "created": "2026-03-02"
-    },
-    {
-      "id": "t005",
-      "title": "Setup cron reporte diario 6AM ARG",
-      "status": "hecho",
-      "tag": "ops",
-      "created": "2026-03-02"
-    },
-    {
-      "id": "t006",
-      "title": "Conectar Windsor.ai API",
-      "status": "hecho",
-      "tag": "ads",
-      "created": "2026-03-02"
-    },
-    {
-      "id": "t007",
-      "title": "Fórmulas CRM Sheet — leads por campaña",
-      "status": "hecho",
-      "tag": "crm",
-      "created": "2026-03-02"
-    },
-    {
-      "id": "t008",
-      "title": "Task Board dinámico — métricas en tiempo real",
-      "status": "en-proceso",
-      "tag": "ops",
-      "created": "2026-03-02"
-    }
+    { "id": "t001", "title": "Conectar Meta Ads API para leads en tiempo real", "status": "backlog", "tag": "ads", "created": "2026-03-02" },
+    { "id": "t002", "title": "Integrar GHL API para leads en reporte diario", "status": "backlog", "tag": "crm", "created": "2026-03-02" },
+    { "id": "t003", "title": "Task Board dinámico con tabs y Kanban", "status": "in-progress", "tag": "ops", "created": "2026-03-02" },
+    { "id": "t004", "title": "Hostear dashboard en Vercel", "status": "done", "tag": "ops", "created": "2026-03-02" },
+    { "id": "t005", "title": "Análisis competidor Spanish Smile", "status": "done", "tag": "research", "created": "2026-03-02" },
+    { "id": "t006", "title": "Setup cron reporte diario 6AM ARG", "status": "done", "tag": "ops", "created": "2026-03-02" },
+    { "id": "t007", "title": "Conectar Windsor.ai API", "status": "done", "tag": "ads", "created": "2026-03-02" },
+    { "id": "t008", "title": "Fórmulas CRM Sheet — leads por campaña (últimos 30d)", "status": "done", "tag": "crm", "created": "2026-03-02" },
+    { "id": "t009", "title": "Reporte diario SA Marketing (cron activo 6AM ARG)", "status": "recurring", "tag": "ads", "created": "2026-03-02" },
+    { "id": "t010", "title": "Análisis leads por campaña — cruce Windsor + CRM", "status": "done", "tag": "crm", "created": "2026-03-02" }
   ]
 }
