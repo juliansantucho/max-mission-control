@@ -1,0 +1,17 @@
+{
+  "always_running": [
+    { "name": "Reporte Diario SA Marketing", "freq": "24h" },
+    { "name": "Monitoreo Campañas Windsor", "freq": "6h" },
+    { "name": "Heartbeat Check", "freq": "30min" },
+    { "name": "Memory Sync", "freq": "24h" }
+  ],
+  "schedule": [
+    { "hour": 6, "days": [0,1,2,3,4,5,6], "task": "Reporte Diario SA Marketing", "color": "#166534" },
+    { "hour": 8, "days": [1,2,3,4,5], "task": "Morning Brief Juli", "color": "#1e3a5f" },
+    { "hour": 10, "days": [1,3,5], "task": "Análisis Leads CRM", "color": "#3b1f5e" },
+    { "hour": 12, "days": [0,1,2,3,4,5,6], "task": "Monitoreo Campañas", "color": "#166534" },
+    { "hour": 14, "days": [1,2,3,4,5], "task": "Research & Competidores", "color": "#4a2000" },
+    { "hour": 18, "days": [0,1,2,3,4,5,6], "task": "Monitoreo Campañas", "color": "#166534" },
+    { "hour": 22, "days": [0,1,2,3,4,5,6], "task": "Memory Update", "color": "#1e3a5f" }
+  ]
+}

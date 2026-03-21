@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Max — Mission Control</title>
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+body { background:#0d0d0d; color:#fff; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif; min-height:100vh; display:flex; }
+
+/* SIDEBAR */
+.sidebar { width:230px; min-height:100vh; background:#0a0a0a; border-right:1px solid #1a1a1a; display:flex; flex-direction:column; padding:24px 12px; position:fixed; left:0; top:0; bottom:0; z-index:100; }
+.logo { font-size:17px; font-weight:800; padding:0 8px; margin-bottom:28px; display:flex; align-items:center; gap:8px; }
+.logo span { color:#6366f1; }
+.nav-section { font-size:10px; color:#2e2e2e; text-transform:uppercase; letter-spacing:1.5px; padding:0 8px; margin:16px 0 6px; }
+.nav-item { display:flex; align-items:center; gap:10px; padding:9px 10px; border-radius:8px; font-size:13px; color:#555; cursor:pointer; transition:all .15s; border:none; background:none; width:100%; text-align:left; }
+.nav-item:hover { background:#141414; color:#aaa; }
+.nav-item.active { background:#17173a; color:#818cf8; }
+.nav-icon { font-size:15px; width:20px; text-align:center; }
+.sidebar-bottom { margin-top:auto; padding:12px 8px; }
+.live-badge { display:flex; align-items:center; gap:7px; background:#0f1f0f; border:1px solid #1a3a1a; color:#22c55e; font-size:11px; padding:8px 12px; border-radius:10px; }
+.dot-live { width:7px; height:7px; background:#22c55e; border-radius:50%; animation:pulse 2s infinite; flex-shrink:0; }
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.4} }
+.model-tag { margin-top:8px; padding:8px 12px; background:#111; border-radius:10px; font-size:11px; color:#333; }
+
+/* MAIN */
+.main { margin-left:230px; flex:1; min-height:100vh; }
+.page { display:none; padding:32px; }
+.page.active { display:block; }
+.page-header { margin-bottom:24px; }
+.page-header h2 { font-size:22px; font-weight:700; }
+.page-header p { font-size:13px; color:#444; margin-top:4px; }
+
+/* CARDS / METRICS */
+.metrics { display:grid; grid-template-columns:repeat(4,1fr); gap:16px; margin-bottom:24px; }
+.metric { background:#111; border:1px solid #1e1e1e; border-radius:12px; padding:22px; }
+.metric-label { font-size:11px; color:#444; text-transform:uppercase; letter-spacing:1px; margin-bottom:10px; }
+.metric-value { font-size:30px; font-weight:800; line-height:1; }
+.metric-sub { font-size:12px; color:#333; margin-top:6px; }
+.metric-change { font-size:12px; margin-top:8px; }
+.neutral { color:#eab308; } .up { color:#22c55e; } .down { color:#ef4444; }
+.grid2 { display:grid; grid-template-columns:1.5fr 1fr; gap:16px; margin-bottom:24px; }
+.card { background:#111; border:1px solid #1e1e1e; border-radius:12px; padding:22px; }
+.card-title { font-size:11px; color:#444; text-transform:uppercase; letter-spacing:1px; margin-bottom:16px; }
+table { width:100%; border-collapse:collapse; }
+th { font-size:11px; color:#333; font-weight:500; text-align:left; padding:8px 10px; border-bottom:1px solid #1a1a1a; text-transform:uppercase; }
+td { padding:11px 10px; font-size:13px; border-bottom:1px solid #161616; }
+tr:last-child td { border-bottom:none; }
+tr:hover td { background:#141414; }
+.badge { display:inline-flex; padding:3px 9px; border-radius:20px; font-size:11px; font-weight:600; }
+.badge-yellow { background:#2a200f; color:#eab308; }
+.badge-red { background:#2a0f0f; color:#ef4444; }
+.badge-green { background:#0f2a0f; color:#22c55e; }
+.conn-row { display:flex; align-items:center; justify-content:space-between; padding:11px 0; border-bottom:1px solid #161616; }
+.conn-row:last-child { border-bottom:none; }
+.conn-dot { width:7px; height:7px; border-radius:50%; margin-right:8px; display:inline-block; flex-shrink:0; }
+.conn-ok { background:#22c55e; } .conn-warn { background:#eab308; }
+.conn-name { font-size:13px; color:#ccc; display:flex; align-items:center; }
+.conn-status { font-size:11px; color:#444; }
+
+/* TASK BOARD */
+.filter-row { display:flex; align-items:center; gap:8px; margin-bottom:12px; flex-wrap:wrap; }
+.filter-btn { padding:6px 14px; border-radius:20px; font-size:12px; color:#555; cursor:pointer; border:1px solid #1e1e1e; background:#111; transition:all .15s; }
+.filter-btn:hover { color:#fff; border-color:#333; }
+.filter-btn.active { background:#6366f1; color:#fff; border-color:#6366f1; }
+.board-stats { display:flex; gap:20px; font-size:13px; color:#555; margin-bottom:16px; }
+.highlight { color:#6366f1; font-weight:600; }
+.green-hl { color:#22c55e; font-weight:600; }
+.total-hl { color:#777; font-weight:600; }
+.kanban { display:flex; gap:14px; overflow-x:auto; padding-bottom:16px; }
+.kanban::-webkit-scrollbar { height:5px; }
+.kanban::-webkit-scrollbar-thumb { background:#222; border-radius:3px; }
+.k-col { min-width:220px; max-width:220px; background:#111; border:1px solid #1e1e1e; border-radius:12px; padding:14px; flex-shrink:0; }
+.k-col-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:14px; }
+.k-col-title { font-size:12px; font-weight:600; color:#888; display:flex; align-items:center; gap:7px; }
+.dot-col { width:8px; height:8px; border-radius:50%; flex-shrink:0; }
+.dot-purple { background:#a78bfa; } .dot-gray { background:#555; } .dot-blue { background:#60a5fa; }
+.dot-orange { background:#fb923c; } .dot-yellow { background:#eab308; } .dot-green { background:#22c55e; }
+.k-count { background:#1a1a1a; color:#555; font-size:11px; padding:2px 7px; border-radius:10px; }
+.k-card { background:#161616; border:1px solid #222; border-radius:8px; padding:12px; margin-bottom:8px; cursor:pointer; transition:border-color .15s; }
+.k-card:hover { border-color:#333; }
+.k-card-title { font-size:13px; color:#ddd; line-height:1.4; margin-bottom:8px; }
+.k-card-meta { display:flex; align-items:center; gap:6px; flex-wrap:wrap; }
+.k-tag { font-size:10px; padding:2px 7px; border-radius:4px; font-weight:500; }
+.tag-ads { background:#1a1040; color:#818cf8; }
+.tag-crm { background:#0f2a1a; color:#4ade80; }
+.tag-research { background:#2a1a0f; color:#fb923c; }
+.tag-ops { background:#1a0f1a; color:#c084fc; }
+.k-date { font-size:10px; color:#333; margin-left:auto; }
+.new-task-btn { background:#6366f1; color:#fff; border:none; padding:8px 16px; border-radius:8px; font-size:13px; font-weight:600; cursor:pointer; }
+
+/* CALENDAR */
+.cal-always { background:#111; border:1px solid #1e1e1e; border-radius:12px; padding:20px; margin-bottom:20px; }
+.cal-always h3 { font-size:14px; font-weight:700; margin-bottom:14px; }
+.always-chips { display:flex; flex-wrap:wrap; gap:10px; }
+.always-chip { background:#0f1f0f; border:1px solid #1a3a1a; color:#22c55e; font-size:12px; padding:6px 14px; border-radius:20px; display:flex; align-items:center; gap:8px; }
+.chip-dot { width:7px; height:7px; border-radius:50%; background:#22c55e; animation:pulse 2s infinite; flex-shrink:0; }
+.chip-freq { color:#166534; font-size:11px; }
+.cal-wrap { background:#111; border:1px solid #1e1e1e; border-radius:12px; overflow:hidden; }
+.cal-header-row { display:grid; grid-template-columns:60px repeat(7,1fr); border-bottom:1px solid #1a1a1a; }
+.cal-day-head { padding:12px 8px; text-align:center; font-size:12px; color:#444; font-weight:600; text-transform:uppercase; border-right:1px solid #161616; }
+.cal-day-head.today { color:#6366f1; }
+.cal-body { overflow-y:auto; max-height:520px; }
+.cal-row { display:grid; grid-template-columns:60px repeat(7,1fr); border-bottom:1px solid #111; min-height:44px; }
+.cal-row:hover { background:#121212; }
+.cal-time { padding:14px 10px 0 0; font-size:11px; color:#2e2e2e; text-align:right; border-right:1px solid #161616; }
+.cal-cell { border-right:1px solid #0f0f0f; padding:4px; }
+.cal-event { border-radius:4px; padding:4px 8px; font-size:11px; font-weight:500; color:#fff; margin-bottom:2px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; border-left:3px solid rgba(255,255,255,.15); }
+
+/* ADS IDEAS */
+.ideas-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:14px; }
+.idea-card { background:#111; border:1px solid #1e1e1e; border-radius:12px; padding:18px; }
+.idea-num { font-size:11px; color:#333; margin-bottom:8px; }
+.idea-title { font-size:14px; font-weight:600; color:#ddd; margin-bottom:8px; line-height:1.4; }
+.idea-desc { font-size:12px; color:#555; line-height:1.6; }
+.idea-tag { display:inline-block; font-size:10px; padding:2px 8px; border-radius:4px; margin-top:10px; }
+
+/* USAGE */
+.usage-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:16px; margin-bottom:24px; }
+.usage-bar-wrap { margin-top:10px; }
+.usage-bar-bg { background:#1a1a1a; border-radius:4px; height:6px; overflow:hidden; }
+.usage-bar { height:6px; border-radius:4px; background:#6366f1; }
+
+/* RECURRING */
+.rec-list { display:flex; flex-direction:column; gap:12px; }
+.rec-item { background:#111; border:1px solid #1e1e1e; border-radius:12px; padding:18px; display:flex; align-items:center; justify-content:space-between; }
+.rec-left h4 { font-size:14px; font-weight:600; color:#ddd; margin-bottom:4px; }
+.rec-left p { font-size:12px; color:#444; }
+.rec-freq { background:#17173a; color:#818cf8; font-size:12px; padding:4px 12px; border-radius:20px; font-weight:600; }
+.rec-status { display:flex; align-items:center; gap:6px; font-size:12px; color:#22c55e; margin-top:6px; }
+</style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<div class="sidebar">
+  <div class="logo">⚡ <span>Max</span></div>
+
+  <div class="nav-section">Main</div>
+  <button class="nav-item active" onclick="showTab('taskboard',this)"><span class="nav-icon">📋</span> Task Board</button>
+  <button class="nav-item" onclick="showTab('calendar',this)"><span class="nav-icon">📅</span> Calendar</button>
+  <button class="nav-item" onclick="showTab('adsideas',this)"><span class="nav-icon">💡</span> Ads Ideas</button>
+  <button class="nav-item" onclick="showTab('recurring',this)"><span class="nav-icon">🔁</span> Recurring Tasks</button>
+
+  <div class="nav-section">System</div>
+  <button class="nav-item" onclick="showTab('connections',this)"><span class="nav-icon">🔗</span> Connections</button>
+  <button class="nav-item" onclick="showTab('usage',this)"><span class="nav-icon">📈</span> Usage</button>
+
+  <div class="sidebar-bottom">
+    <div class="live-badge"><span class="dot-live"></span><span id="fecha" style="font-size:11px;"></span></div>
+    <div class="model-tag">claude-sonnet-4-6</div>
+  </div>
+</div>
+
+<!-- MAIN -->
+<div class="main">
+
+<!-- TASK BOARD -->
+<div class="page active" id="page-taskboard">
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;">
+    <div class="page-header" style="margin-bottom:0;">
+      <h2>📋 Task Board</h2>
+      <p>Tareas de Max — actualizadas en tiempo real</p>
+    </div>
+    <button class="new-task-btn">+ New Task</button>
+  </div>
+
+  <div class="filter-row">
+    <span style="font-size:12px;color:#333;">📅</span>
+    <button class="filter-btn active">All Time</button>
+    <button class="filter-btn">Today</button>
+    <button class="filter-btn">This Week</button>
+    <button class="filter-btn">This Month</button>
+  </div>
+
+  <div class="board-stats" id="board-stats"></div>
+
+  <div class="filter-row">
+    <button class="filter-btn active" onclick="filterTag('all',this)">All</button>
+    <button class="filter-btn" onclick="filterTag('ads',this)">Ads</button>
+    <button class="filter-btn" onclick="filterTag('crm',this)">CRM</button>
+    <button class="filter-btn" onclick="filterTag('ops',this)">Ops</button>
+    <button class="filter-btn" onclick="filterTag('research',this)">Research</button>
+  </div>
+
+  <div class="kanban" id="kanban"></div>
+</div>
+
+<!-- CALENDAR -->
+<div class="page" id="page-calendar">
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;">
+    <div class="page-header" style="margin-bottom:0;"><h2>📅 Calendar</h2><p>Weekly schedule — Max AI Agent</p></div>
+  </div>
+  <div class="cal-always">
+    <h3>⚡ Always Running</h3>
+    <div class="always-chips" id="always-chips"></div>
+  </div>
+  <div class="cal-wrap">
+    <div class="cal-header-row">
+      <div class="cal-day-head"></div>
+      <div class="cal-day-head" id="head-0">Sun</div>
+      <div class="cal-day-head" id="head-1">Mon</div>
+      <div class="cal-day-head" id="head-2">Tue</div>
+      <div class="cal-day-head" id="head-3">Wed</div>
+      <div class="cal-day-head" id="head-4">Thu</div>
+      <div class="cal-day-head" id="head-5">Fri</div>
+      <div class="cal-day-head" id="head-6">Sat</div>
+    </div>
+    <div class="cal-body" id="cal-body"></div>
+  </div>
+</div>
+
+<!-- ADS IDEAS -->
+<div class="page" id="page-adsideas">
+  <div class="page-header"><h2>💡 Ads Ideas</h2><p>Ideas B2B para SA-Dental — Hispanos USA</p></div>
+  <div class="ideas-grid" id="ideas-grid">
+    <div class="idea-card"><div class="idea-num">01</div><div class="idea-title">El problema que nadie te dice sobre conseguir pacientes hispanos</div><div class="idea-desc">Video UGC de doctor frustrado con agencias genéricas. Hook en español. Solución: sistema especializado.</div><span class="idea-tag tag-ads">Video</span></div>
+    <div class="idea-card"><div class="idea-num">02</div><div class="idea-title">"Conseguimos 23 nuevos pacientes en 90 días o te devolvemos el dinero"</div><div class="idea-desc">Garantía ROI al frente. Testimonial de cliente real. CTA: agendar llamada estratégica.</div><span class="idea-tag tag-ads">Imagen</span></div>
+    <div class="idea-card"><div class="idea-num">03</div><div class="idea-title">Antes vs Después: agenda llena vs agenda vacía</div><div class="idea-desc">Split screen. Clínica sin sistema vs clínica con Hispanic Dental Domination System™.</div><span class="idea-tag tag-ads">Video</span></div>
+    <div class="idea-card"><div class="idea-num">04</div><div class="idea-title">¿Cuánto te está costando cada paciente nuevo?</div><div class="idea-desc">Calculadora de CAC. Pain point financiero. Reencuadre: $1,499 vs $300/paciente vs CAC actual.</div><span class="idea-tag tag-ads">Carrusel</span></div>
+    <div class="idea-card"><div class="idea-num">05</div><div class="idea-title">Lo que Spanish Smile no te dice (sin mencionarlos)</div><div class="idea-desc">Comparación implícita. SA-Dental también cubre chiro y medspa. Más nichos, mismo precio.</div><span class="idea-tag tag-research">Comparación</span></div>
+    <div class="idea-card"><div class="idea-num">06</div><div class="idea-title">Testimonio: "Llenamos el calendario en 3 semanas"</div><div class="idea-desc">Video testimonial de cliente dental hispano. Resultados concretos + proceso simple.</div><span class="idea-tag tag-ads">Video UGC</span></div>
+    <div class="idea-card"><div class="idea-num">07</div><div class="idea-title">El sistema que usan las clínicas dentales top de Florida</div><div class="idea-desc">Social proof geográfico. Autoridad por ubicación. CTA: ver si aplica para su zona.</div><span class="idea-tag tag-ads">Imagen</span></div>
+    <div class="idea-card"><div class="idea-num">08</div><div class="idea-title">Chiro: "20 pacientes nuevos por mes sin pagar por referidos"</div><div class="idea-desc">Específico para quiroprácticos hispanos. Nicho validado. CTA directa.</div><span class="idea-tag tag-crm">Chiro</span></div>
+    <div class="idea-card"><div class="idea-num">09</div><div class="idea-title">Medspa: 15 clientes de Botox en 14 días</div><div class="idea-desc">Dato concreto de cliente real. Urgencia implícita. Para medspas hispanas en USA.</div><span class="idea-tag tag-crm">Medspa</span></div>
+  </div>
+</div>
+
+<!-- RECURRING TASKS -->
+<div class="page" id="page-recurring">
+  <div class="page-header"><h2>🔁 Recurring Tasks</h2><p>Tareas automáticas que Max ejecuta sin que se lo pidas</p></div>
+  <div class="rec-list">
+    <div class="rec-item">
+      <div class="rec-left">
+        <h4>Reporte Diario SA Marketing</h4>
+        <p>Spend, clicks, CPC por campaña — solo cuenta SA MARKETING</p>
+        <div class="rec-status"><span class="dot-live" style="width:6px;height:6px;"></span> Activo — próximo: mañana 6AM ARG</div>
+      </div>
+      <div class="rec-freq">Diario · 6AM ARG</div>
+    </div>
+    <div class="rec-item">
+      <div class="rec-left">
+        <h4>Heartbeat Check</h4>
+        <p>Revisión de emails urgentes, calendar, notificaciones</p>
+        <div class="rec-status"><span class="dot-live" style="width:6px;height:6px;"></span> Activo</div>
+      </div>
+      <div class="rec-freq">Cada 30min</div>
+    </div>
+    <div class="rec-item">
+      <div class="rec-left">
+        <h4>Memory Sync</h4>
+        <p>Actualización de archivos de memoria y contexto del negocio</p>
+        <div class="rec-status"><span class="dot-live" style="width:6px;height:6px;"></span> Activo</div>
+      </div>
+      <div class="rec-freq">Diario</div>
+    </div>
+    <div class="rec-item">
+      <div class="rec-left">
+        <h4>Monitoreo Campañas Windsor</h4>
+        <p>Check de anomalías en spend o CPC — alerta si algo se dispara</p>
+        <div class="rec-status"><span style="color:#eab308;">⚠</span> Pendiente de automatizar</div>
+      </div>
+      <div class="rec-freq">Cada 6h</div>
+    </div>
+  </div>
+</div>
+
+<!-- CONNECTIONS -->
+<div class="page" id="page-connections">
+  <div class="page-header"><h2>🔗 Connections</h2><p>Integraciones activas y pendientes</p></div>
+  <div class="card" style="max-width:620px;">
+    <div class="conn-row"><div class="conn-name"><span class="conn-dot conn-ok"></span>Windsor.ai</div><div class="conn-status">API key activa ✓</div></div>
+    <div class="conn-row"><div class="conn-name"><span class="conn-dot conn-ok"></span>CRM Google Sheets</div><div class="conn-status">Lead Data conectado ✓</div></div>
+    <div class="conn-row"><div class="conn-name"><span class="conn-dot conn-ok"></span>GitHub (juliansantucho)</div><div class="conn-status">Dashboard repo ✓</div></div>
+    <div class="conn-row"><div class="conn-name"><span class="conn-dot conn-ok"></span>Vercel</div><div class="conn-status">Auto-deploy activo ✓</div></div>
+    <div class="conn-row"><div class="conn-name"><span class="conn-dot conn-warn"></span>Meta Ads API</div><div class="conn-status">Pendiente — necesita token directo</div></div>
+    <div class="conn-row"><div class="conn-name"><span class="conn-dot conn-warn"></span>GHL API</div><div class="conn-status">Pendiente — necesita acceso</div></div>
+    <div class="conn-row"><div class="conn-name"><span class="conn-dot conn-warn"></span>Namecheap</div><div class="conn-status">Pendiente — API no habilitada</div></div>
+  </div>
+</div>
+
+<!-- USAGE -->
+<div class="page" id="page-usage">
+  <div class="page-header"><h2>📈 Usage</h2><p>Uso del agente Max — Marzo 2026</p></div>
+  <div class="usage-grid">
+    <div class="metric">
+      <div class="metric-label">Mensajes este mes</div>
+      <div class="metric-value">~120</div>
+      <div class="metric-sub">conversaciones con Juli</div>
+      <div class="usage-bar-wrap"><div class="usage-bar-bg"><div class="usage-bar" style="width:24%"></div></div></div>
+    </div>
+    <div class="metric">
+      <div class="metric-label">Tareas completadas</div>
+      <div class="metric-value">10</div>
+      <div class="metric-sub">desde el 1 Mar 2026</div>
+      <div class="usage-bar-wrap"><div class="usage-bar-bg"><div class="usage-bar" style="width:40%;background:#22c55e;"></div></div></div>
+    </div>
+    <div class="metric">
+      <div class="metric-label">Crons activos</div>
+      <div class="metric-value">1</div>
+      <div class="metric-sub">reporte diario 6AM ARG</div>
+    </div>
+  </div>
+  <div class="card" style="max-width:620px;">
+    <div class="card-title">Actividad reciente</div>
+    <table>
+      <tr><th>Fecha</th><th>Acción</th><th>Resultado</th></tr>
+      <tr><td>02 Mar</td><td>Setup Windsor.ai API</td><td><span class="badge badge-green">✓ Done</span></td></tr>
+      <tr><td>02 Mar</td><td>Análisis campañas 30d</td><td><span class="badge badge-green">✓ Done</span></td></tr>
+      <tr><td>02 Mar</td><td>Research Spanish Smile</td><td><span class="badge badge-green">✓ Done</span></td></tr>
+      <tr><td>02 Mar</td><td>Cron reporte diario 6AM</td><td><span class="badge badge-green">✓ Active</span></td></tr>
+      <tr><td>02 Mar</td><td>Dashboard Mission Control</td><td><span class="badge badge-green">✓ Live</span></td></tr>
+      <tr><td>02 Mar</td><td>Task Board dinámico</td><td><span class="badge badge-green">✓ Done</span></td></tr>
+    </table>
+  </div>
+</div>
+
+</div><!-- end main -->
+
+<script>
+const now = new Date();
+document.getElementById('fecha').textContent = now.toLocaleDateString('es-AR',{weekday:'short',day:'numeric',month:'short'});
+
+function showTab(name, el) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById('page-'+name).classList.add('active');
+  if(el) el.classList.add('active');
+}
+
+// Filter buttons (date row only)
+document.querySelectorAll('.filter-row .filter-btn:not([onclick])').forEach(btn => {
+  btn.addEventListener('click', function() {
+    const parent = this.closest('.filter-row');
+    parent.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    this.classList.add('active');
+  });
+});
+
+const tagClass = { ads:'tag-ads', crm:'tag-crm', research:'tag-research', ops:'tag-ops' };
+const columns = [
+  { id:'recurring', label:'🔁 Recurring Tasks', dot:'dot-purple' },
+  { id:'backlog',   label:'📂 Backlog',          dot:'dot-gray' },
+  { id:'in-progress', label:'⬆ In Progress',    dot:'dot-blue' },
+  { id:'waiting',   label:'⏳ Waiting / Blocked',dot:'dot-orange' },
+  { id:'review',    label:'🔍 Review',            dot:'dot-yellow' },
+  { id:'done',      label:'✅ Done',              dot:'dot-green' }
+];
+
+let allTasks = [];
+let currentTag = 'all';
+
+function renderBoard(tasks) {
+  const kanban = document.getElementById('kanban');
+  kanban.innerHTML = '';
+  const filtered = currentTag === 'all' ? tasks : tasks.filter(t => t.tag === currentTag);
+  const inProg = filtered.filter(t => t.status === 'in-progress').length;
+  const done = filtered.filter(t => t.status === 'done').length;
+  document.getElementById('board-stats').innerHTML = `
+    <span><span class="highlight">${inProg} In progress</span></span> ·
+    <span><span class="green-hl">${done} Done</span></span> ·
+    <span><span class="total-hl">${filtered.length} Total</span></span>`;
+  columns.forEach(col => {
+    const colTasks = filtered.filter(t => t.status === col.id);
+    const div = document.createElement('div');
+    div.className = 'k-col';
+    div.innerHTML = `<div class="k-col-header"><div class="k-col-title"><span class="dot-col ${col.dot}"></span>${col.label}</div><span class="k-count">${colTasks.length}</span></div>`;
+    colTasks.forEach(t => {
+      const card = document.createElement('div');
+      card.className = 'k-card';
+      card.innerHTML = `<div class="k-card-title">${t.title}</div><div class="k-card-meta"><span class="k-tag ${tagClass[t.tag]||''}">${t.tag}</span><span class="k-date">${t.created}</span></div>`;
+      div.appendChild(card);
+    });
+    kanban.appendChild(div);
+  });
+}
+
+function filterTag(tag, btn) {
+  currentTag = tag;
+  document.querySelectorAll('.filter-row [onclick]').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderBoard(allTasks);
+}
+
+// Calendar
+fetch('./schedule.json?v='+Date.now()).then(r=>r.json()).then(data => {
+  const chipsEl = document.getElementById('always-chips');
+  data.always_running.forEach(item => {
+    const chip = document.createElement('div');
+    chip.className = 'always-chip';
+    chip.innerHTML = `<span class="chip-dot"></span>${item.name} <span class="chip-freq">(${item.freq})</span>`;
+    chipsEl.appendChild(chip);
+  });
+  const todayDow = now.getDay();
+  const headEl = document.getElementById('head-'+todayDow);
+  if(headEl) headEl.classList.add('today');
+  const body = document.getElementById('cal-body');
+  for(let h=0;h<24;h++){
+    const row = document.createElement('div'); row.className='cal-row';
+    const tc = document.createElement('div'); tc.className='cal-time'; tc.textContent=h.toString().padStart(2,'0')+':00';
+    row.appendChild(tc);
+    for(let d=0;d<7;d++){
+      const cell = document.createElement('div'); cell.className='cal-cell';
+      data.schedule.filter(s=>s.hour===h&&s.days.includes(d)).forEach(ev=>{
+        const el = document.createElement('div'); el.className='cal-event';
+        el.style.background=ev.color; el.textContent=ev.task; el.title=ev.task;
+        cell.appendChild(el);
+      });
+      row.appendChild(cell);
+    }
+    body.appendChild(row);
+  }
+  body.scrollTop = 6*44;
+});
+
+// Tasks
+fetch('./tasks.json?v='+Date.now()).then(r=>r.json()).then(data=>{
+  allTasks = data.tasks;
+  renderBoard(allTasks);
+});
+</script>
+</body>
+</html>

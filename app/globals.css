@@ -1,0 +1,20 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html, body {
+  background-color: #0a0a0f;
+  color: #e2e8f0;
+  font-family: 'JetBrains Mono', 'Fira Code', ui-monospace, monospace;
+  -webkit-font-smoothing: antialiased;
+}
+
+::-webkit-scrollbar { width: 4px; height: 4px; }
+::-webkit-scrollbar-track { background: #0f0f17; }
+::-webkit-scrollbar-thumb { background: #2a2a3e; border-radius: 2px; }
+
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+.status-pulse { animation: pulse-dot 2s ease-in-out infinite; }
