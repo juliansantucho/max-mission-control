@@ -6,7 +6,13 @@ import CalendarPipelinePanel from './panels/CalendarPipelinePanel'
 import CommunicationsPanel from './panels/CommunicationsPanel'
 import AutomationsPanel from './panels/AutomationsPanel'
 import AlertsPanel from './panels/AlertsPanel'
-import PlaceholderPanel from './panels/PlaceholderPanel'
+import PersonalPerformancePanel from './panels/PersonalPerformancePanel'
+import DailyHabitsPanel from './panels/DailyHabitsPanel'
+import TaskBoardPanel from './panels/TaskBoardPanel'
+import AdsIdeasPanel from './panels/AdsIdeasPanel'
+import ConnectionsPanel from './panels/ConnectionsPanel'
+import UsagePanel from './panels/UsagePanel'
+import SchedulePanel from './panels/SchedulePanel'
 import type { DashboardData } from '@/types'
 
 export default function DashboardClient({ data }: { data: DashboardData }) {
@@ -15,8 +21,9 @@ export default function DashboardClient({ data }: { data: DashboardData }) {
       {/* Panel 1 — Agent Status — full width */}
       <AgentStatusPanel initial={data.agents} hasSupabase={data.hasSupabase} />
 
-      {/* Grid 2-3 cols */}
+      {/* Main grid — 2-3 cols */}
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3">
+
         {/* Panel 2 — Business Metrics */}
         <BusinessMetricsPanel metrics={data.businessMetrics} />
 
@@ -29,20 +36,14 @@ export default function DashboardClient({ data }: { data: DashboardData }) {
         {/* Panel 5 — Communications */}
         <CommunicationsPanel initial={data.telegramMessages} hasSupabase={data.hasSupabase} />
 
-        {/* Panel 6 — Performance (placeholder) */}
-        <PlaceholderPanel
-          title="Personal Performance"
-          comingSoon="Coming soon — connect wearable (Whoop/Garmin) or health API"
-        />
+        {/* Panel 6 — Personal Performance */}
+        <PersonalPerformancePanel />
 
-        {/* Panel 7 — Daily Habits (placeholder) */}
-        <PlaceholderPanel
-          title="Daily Habits"
-          comingSoon="Coming soon — connect tracking DB or habit app"
-        />
+        {/* Panel 7 — Daily Habits */}
+        <DailyHabitsPanel />
 
         {/* Panel 8 — Automations — spans 2 cols */}
-        <div className="md:col-span-2 xl:col-span-2">
+        <div className="md:col-span-2">
           <AutomationsPanel
             makeScenarios={data.makeScenarios}
             automationStatuses={data.automationStatuses}
@@ -52,6 +53,26 @@ export default function DashboardClient({ data }: { data: DashboardData }) {
 
         {/* Panel 9 — Alerts */}
         <AlertsPanel initial={data.alerts} hasSupabase={data.hasSupabase} />
+
+        {/* Legacy panels — Task Board spans full width */}
+        <div className="md:col-span-2 xl:col-span-3">
+          <TaskBoardPanel />
+        </div>
+
+        {/* Schedule */}
+        <SchedulePanel />
+
+        {/* Ads Ideas — spans 2 cols */}
+        <div className="md:col-span-2">
+          <AdsIdeasPanel />
+        </div>
+
+        {/* Connections */}
+        <ConnectionsPanel />
+
+        {/* Usage */}
+        <UsagePanel />
+
       </div>
     </div>
   )
