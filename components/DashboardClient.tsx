@@ -1,4 +1,6 @@
 'use client'
+
+import { useState } from 'react'
 import AgentStatusPanel from './panels/AgentStatusPanel'
 import BusinessMetricsPanel from './panels/BusinessMetricsPanel'
 import FinancialPanel from './panels/FinancialPanel'
@@ -8,72 +10,92 @@ import AutomationsPanel from './panels/AutomationsPanel'
 import AlertsPanel from './panels/AlertsPanel'
 import PersonalPerformancePanel from './panels/PersonalPerformancePanel'
 import DailyHabitsPanel from './panels/DailyHabitsPanel'
-import TaskBoardPanel from './panels/TaskBoardPanel'
-import AdsIdeasPanel from './panels/AdsIdeasPanel'
-import ConnectionsPanel from './panels/ConnectionsPanel'
-import UsagePanel from './panels/UsagePanel'
-import SchedulePanel from './panels/SchedulePanel'
 import type { DashboardData } from '@/types'
 
+const TABS = [
+  { id: 'agent',       icon: '🤖', label: 'Agent Status' },
+  { id: 'business',    icon: '📊', label: 'Business Metrics' },
+  { id: 'financial',   icon: '💰', label: 'Financial Overview' },
+  { id: 'calendar',    icon: '📅', label: 'Calendar & Pipeline' },
+  { id: 'comms',       icon: '📧', label: 'Communications' },
+  { id: 'performance', icon: '💪', label: 'Personal Performance' },
+  { id: 'habits',      icon: '🍽️', label: 'Daily Habits' },
+  { id: 'automations', icon: '⏰', label: 'Automation Status' },
+  { id: 'alerts',      icon: '🔔', label: 'Alerts & Anomalies' },
+]
+
 export default function DashboardClient({ data }: { data: DashboardData }) {
+  const [activeTab, setActiveTab] = useState('agent')
+
   return (
-    <div className="p-3 flex flex-col gap-3">
-      {/* Panel 1 — Agent Status — full width */}
-      <AgentStatusPanel initial={data.agents} hasSupabase={data.hasSupabase} />
+    <div className="flex h-full overflow-hidden">
+      {/* SIDEBAR */}
+      <aside className="w-[220px] flex-shrink-0 bg-[#09090b] border-r border-[#1f1f23] flex flex-col py-5 px-3 overflow-y-auto">
+        <div className="flex items-center gap-2 px-2 mb-6">
+          <span className="text-[#6366f1] text-lg">⚡</span>
+          <span className="font-bold text-xs tracking-widest text-slate-200 uppercase">Mission Control</span>
+        </div>
 
-      {/* Main grid — 2-3 cols */}
-      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3">
+        <nav className="flex flex-col gap-0.5 flex-1">
+          {TABS.map((tab) => (
+            <button
+              key={tab.id}
+              onClick={() => setActiveTab(tab.id)}
+              className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm w-full text-left transition-all duration-150 ${
+                activeTab === tab.id
+                  ? 'bg-[#17173a] text-[#818cf8] font-medium'
+                  : 'text-slate-500 hover:bg-[#18181b] hover:text-slate-300'
+              }`}
+            >
+              <span className="w-5 text-center text-base">{tab.icon}</span>
+              <span className="text-[13px]">{tab.label}</span>
+            </button>
+          ))}
+        </nav>
 
-        {/* Panel 2 — Business Metrics */}
-        <BusinessMetricsPanel metrics={data.businessMetrics} />
+        <div className="mt-4 px-2 pt-4 border-t border-[#1f1f23]">
+          <div className="flex items-center gap-2 text-[11px] text-emerald-500 bg-emerald-950/40 border border-emerald-900/40 rounded-lg px-3 py-2">
+            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse flex-shrink-0" />
+            <span>Max · Online</span>
+          </div>
+          <div className="mt-2 text-[10px] text-slate-700 px-1 font-mono">claude-sonnet-4-6</div>
+        </div>
+      </aside>
 
-        {/* Panel 3 — Financial */}
-        <FinancialPanel financials={data.financials} hasSupabase={data.hasSupabase} />
-
-        {/* Panel 4 — Calendar & Pipeline */}
-        <CalendarPipelinePanel events={data.calendarEvents} />
-
-        {/* Panel 5 — Communications */}
-        <CommunicationsPanel initial={data.telegramMessages} hasSupabase={data.hasSupabase} />
-
-        {/* Panel 6 — Personal Performance */}
-        <PersonalPerformancePanel />
-
-        {/* Panel 7 — Daily Habits */}
-        <DailyHabitsPanel />
-
-        {/* Panel 8 — Automations — spans 2 cols */}
-        <div className="md:col-span-2">
+      {/* MAIN CONTENT */}
+      <main className="flex-1 overflow-y-auto bg-[#0a0a0f] p-5">
+        {activeTab === 'agent' && (
+          <AgentStatusPanel initial={data.agents} hasSupabase={data.hasSupabase} />
+        )}
+        {activeTab === 'business' && (
+          <BusinessMetricsPanel metrics={data.businessMetrics} />
+        )}
+        {activeTab === 'financial' && (
+          <FinancialPanel financials={data.financials} hasSupabase={data.hasSupabase} />
+        )}
+        {activeTab === 'calendar' && (
+          <CalendarPipelinePanel events={data.calendarEvents} />
+        )}
+        {activeTab === 'comms' && (
+          <CommunicationsPanel initial={data.telegramMessages} hasSupabase={data.hasSupabase} />
+        )}
+        {activeTab === 'performance' && (
+          <PersonalPerformancePanel />
+        )}
+        {activeTab === 'habits' && (
+          <DailyHabitsPanel />
+        )}
+        {activeTab === 'automations' && (
           <AutomationsPanel
             makeScenarios={data.makeScenarios}
             automationStatuses={data.automationStatuses}
             hasSupabase={data.hasSupabase}
           />
-        </div>
-
-        {/* Panel 9 — Alerts */}
-        <AlertsPanel initial={data.alerts} hasSupabase={data.hasSupabase} />
-
-        {/* Legacy panels — Task Board spans full width */}
-        <div className="md:col-span-2 xl:col-span-3">
-          <TaskBoardPanel />
-        </div>
-
-        {/* Schedule */}
-        <SchedulePanel />
-
-        {/* Ads Ideas — spans 2 cols */}
-        <div className="md:col-span-2">
-          <AdsIdeasPanel />
-        </div>
-
-        {/* Connections */}
-        <ConnectionsPanel />
-
-        {/* Usage */}
-        <UsagePanel />
-
-      </div>
+        )}
+        {activeTab === 'alerts' && (
+          <AlertsPanel initial={data.alerts} hasSupabase={data.hasSupabase} />
+        )}
+      </main>
     </div>
   )
 }
