@@ -4,9 +4,14 @@ import PanelWrapper from '@/components/PanelWrapper'
 import type { TelegramMessage } from '@/types'
 
 const URGENCY_COLOR: Record<string, string> = {
-  high: 'border-red-500/30 bg-red-500/5',
+  high: 'border border-red-500/30 bg-red-500/5',
   normal: 'bg-surface-2',
   low: 'bg-surface-2 opacity-70',
+}
+const URGENCY_BADGE: Record<string, string> = {
+  high: 'text-red-400 bg-red-500/10 border-red-500/20',
+  normal: 'text-slate-500 bg-surface-3 border-surface-4',
+  low: 'text-slate-600 bg-surface-3 border-surface-4',
 }
 
 function ago(iso: string) {
@@ -30,6 +35,8 @@ export default function CommunicationsPanel({ initial, hasSupabase }: { initial:
   }, [hasSupabase])
 
   const unread = msgs.filter(m => !m.read).length
+  const high = msgs.filter(m => m.urgency === 'high')
+  const rest = msgs.filter(m => m.urgency !== 'high')
 
   return (
     <PanelWrapper
@@ -46,16 +53,45 @@ export default function CommunicationsPanel({ initial, hasSupabase }: { initial:
       ) : msgs.length === 0 ? (
         <p className="text-xs text-slate-600">No messages yet — Max will push here when he receives Telegram messages</p>
       ) : (
-        <div className="flex flex-col gap-1.5">
-          {msgs.map(m => (
-            <div key={m.id} className={`p-2 rounded border text-xs ${URGENCY_COLOR[m.urgency]}`}>
-              <div className="flex justify-between mb-0.5">
-                <span className="font-semibold text-slate-300">{m.from_user}</span>
-                <span className="text-slate-600">{ago(m.created_at)}</span>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
+          {/* High urgency */}
+          <div>
+            <div className="text-xs text-slate-600 uppercase tracking-wider mb-2">High Priority · {high.length}</div>
+            {high.length === 0 ? (
+              <p className="text-xs text-slate-700 italic">No high-priority messages</p>
+            ) : (
+              <div className="flex flex-col gap-2">
+                {high.map(m => (
+                  <div key={m.id} className={`p-3 rounded-lg border text-xs ${URGENCY_COLOR[m.urgency]}`}>
+                    <div className="flex justify-between mb-1">
+                      <span className="font-semibold text-slate-300">{m.from_user}</span>
+                      <span className="text-slate-600">{ago(m.created_at)}</span>
+                    </div>
+                    <p className="text-slate-400 leading-relaxed">{m.message_text}</p>
+                  </div>
+                ))}
               </div>
-              <p className="text-slate-400 leading-relaxed">{m.message_text}</p>
+            )}
+          </div>
+
+          {/* All other messages */}
+          <div>
+            <div className="text-xs text-slate-600 uppercase tracking-wider mb-2">All Messages · {rest.length}</div>
+            <div className="flex flex-col gap-2">
+              {rest.map(m => (
+                <div key={m.id} className={`p-3 rounded-lg text-xs ${URGENCY_COLOR[m.urgency]}`}>
+                  <div className="flex justify-between mb-1">
+                    <span className="font-semibold text-slate-300">{m.from_user}</span>
+                    <div className="flex items-center gap-1.5">
+                      <span className={`text-[10px] px-1.5 py-0.5 rounded border ${URGENCY_BADGE[m.urgency]}`}>{m.urgency}</span>
+                      <span className="text-slate-600">{ago(m.created_at)}</span>
+                    </div>
+                  </div>
+                  <p className="text-slate-400 leading-relaxed">{m.message_text}</p>
+                </div>
+              ))}
             </div>
-          ))}
+          </div>
         </div>
       )}
     </PanelWrapper>

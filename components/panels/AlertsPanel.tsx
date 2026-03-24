@@ -9,6 +9,7 @@ const SEV_STYLE: Record<string, string> = {
   info: 'bg-surface-2',
 }
 const SEV_TEXT: Record<string, string> = { critical: 'text-red-400', warning: 'text-yellow-300', info: 'text-slate-400' }
+const SEV_DOT: Record<string, string> = { critical: 'bg-red-500', warning: 'bg-yellow-400', info: 'bg-slate-500' }
 
 function ago(iso: string) {
   const s = Math.floor((Date.now() - new Date(iso).getTime()) / 1000)
@@ -33,6 +34,7 @@ export default function AlertsPanel({ initial, hasSupabase }: { initial: Alert[]
 
   const active = alerts.filter(a => !a.acknowledged)
   const critical = active.filter(a => a.severity === 'critical').length
+  const warnings = active.filter(a => a.severity === 'warning').length
 
   async function ack(id: string) {
     const key = process.env.NEXT_PUBLIC_DASHBOARD_API_KEY
@@ -43,7 +45,7 @@ export default function AlertsPanel({ initial, hasSupabase }: { initial: Alert[]
 
   return (
     <PanelWrapper
-      title="Alerts"
+      title="Alerts & Anomalies"
       subtitle="Realtime · POST /api/alerts"
       badge={
         critical > 0
@@ -56,22 +58,48 @@ export default function AlertsPanel({ initial, hasSupabase }: { initial: Alert[]
       {!hasSupabase ? (
         <p className="text-xs text-slate-600">⚠ Add Supabase env vars to activate alerts</p>
       ) : active.length === 0 ? (
-        <p className="text-xs text-slate-600 text-center py-3">No active alerts</p>
+        <div className="flex flex-col items-center justify-center py-12 gap-3">
+          <div className="text-4xl">✅</div>
+          <p className="text-sm text-slate-500">No active alerts</p>
+          <p className="text-xs text-slate-700">Sistema operando normalmente</p>
+        </div>
       ) : (
-        <div className="flex flex-col gap-2">
-          {active.map(a => (
-            <div key={a.id} className={`p-2.5 rounded text-xs ${SEV_STYLE[a.severity]}`}>
-              <div className="flex items-start justify-between gap-2 mb-1">
-                <span className="font-semibold text-slate-200">{a.title}</span>
-                <div className="flex items-center gap-1.5 flex-shrink-0">
-                  <span className={`text-xs ${SEV_TEXT[a.severity]}`}>{a.severity}</span>
-                  <button onClick={() => ack(a.id)} className="text-slate-600 hover:text-slate-300 px-1">✕</button>
-                </div>
-              </div>
-              <p className="text-slate-400 leading-relaxed">{a.message}</p>
-              <div className="text-slate-600 mt-1">{ago(a.created_at)}{a.source_panel ? ` · ${a.source_panel}` : ''}</div>
+        <div className="flex flex-col gap-4">
+          {/* Summary row */}
+          <div className="grid grid-cols-3 gap-3">
+            <div className="bg-surface-2 rounded-lg p-3 text-center">
+              <div className="text-xl font-bold text-red-400">{critical}</div>
+              <div className="text-xs text-slate-600">Critical</div>
             </div>
-          ))}
+            <div className="bg-surface-2 rounded-lg p-3 text-center">
+              <div className="text-xl font-bold text-yellow-400">{warnings}</div>
+              <div className="text-xs text-slate-600">Warning</div>
+            </div>
+            <div className="bg-surface-2 rounded-lg p-3 text-center">
+              <div className="text-xl font-bold text-slate-400">{active.length - critical - warnings}</div>
+              <div className="text-xs text-slate-600">Info</div>
+            </div>
+          </div>
+
+          {/* Alert list — 2 columns on wide */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-2">
+            {active.map(a => (
+              <div key={a.id} className={`p-3 rounded-lg text-xs ${SEV_STYLE[a.severity]}`}>
+                <div className="flex items-start justify-between gap-2 mb-1.5">
+                  <div className="flex items-center gap-2 min-w-0">
+                    <div className={`w-1.5 h-1.5 rounded-full flex-shrink-0 mt-0.5 ${SEV_DOT[a.severity]}`} />
+                    <span className="font-semibold text-slate-200 truncate">{a.title}</span>
+                  </div>
+                  <div className="flex items-center gap-1.5 flex-shrink-0">
+                    <span className={`text-[10px] ${SEV_TEXT[a.severity]}`}>{a.severity}</span>
+                    <button onClick={() => ack(a.id)} className="text-slate-600 hover:text-slate-300 px-1 leading-none">✕</button>
+                  </div>
+                </div>
+                <p className="text-slate-400 leading-relaxed pl-3.5">{a.message}</p>
+                <div className="text-slate-600 mt-1 pl-3.5">{ago(a.created_at)}{a.source_panel ? ` · ${a.source_panel}` : ''}</div>
+              </div>
+            ))}
+          </div>
         </div>
       )}
     </PanelWrapper>

@@ -23,44 +23,56 @@ export default function BusinessMetricsPanel({ metrics }: { metrics: BusinessMet
       {!hasData ? (
         <p className="text-xs text-slate-600">Connecting to GHL... check API key in env vars.</p>
       ) : (
-        <div className="flex flex-col gap-3">
-          <div className="grid grid-cols-2 gap-2">
-            <div className="bg-surface-2 rounded p-2">
-              <div className="text-xs text-slate-500">Total Contacts</div>
-              <div className="text-xl font-bold text-slate-200">{fmt(metrics.totalClients)}</div>
-              <div className="text-xs text-slate-600">GHL location</div>
-            </div>
-            <div className="bg-surface-2 rounded p-2">
-              <div className="text-xs text-slate-500">Pipeline Value</div>
-              <div className="text-xl font-bold text-emerald-400">{fmt(metrics.pipelineValue, true)}</div>
-              <div className="text-xs text-slate-600">{metrics.pipelineOpportunities} opportunities</div>
-            </div>
-          </div>
-
-          {stages.length > 0 && (
-            <div>
-              <div className="text-xs text-slate-600 uppercase tracking-wider mb-1.5">By Stage</div>
-              <div className="flex flex-col gap-1">
-                {stages.slice(0, 5).map(([stage, info]) => (
-                  <div key={stage} className="flex items-center justify-between text-xs">
-                    <span className={`px-1.5 py-0.5 rounded ${STAGE_COLOR[stage] ?? 'bg-slate-500/20 text-slate-400'}`}>
-                      {stage}
-                    </span>
-                    <span className="text-slate-400">{info.count} deals · {fmt(info.value, true)}</span>
-                  </div>
-                ))}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          {/* Left — summary stats + stages */}
+          <div className="flex flex-col gap-4">
+            <div className="grid grid-cols-2 gap-3">
+              <div className="bg-surface-2 rounded-lg p-4">
+                <div className="text-xs text-slate-500 mb-1">Total Contacts</div>
+                <div className="text-2xl font-bold text-slate-200">{fmt(metrics.totalClients)}</div>
+                <div className="text-xs text-slate-600 mt-0.5">GHL location</div>
+              </div>
+              <div className="bg-surface-2 rounded-lg p-4">
+                <div className="text-xs text-slate-500 mb-1">Pipeline Value</div>
+                <div className="text-2xl font-bold text-emerald-400">{fmt(metrics.pipelineValue, true)}</div>
+                <div className="text-xs text-slate-600 mt-0.5">{metrics.pipelineOpportunities} opportunities</div>
               </div>
             </div>
-          )}
 
+            {stages.length > 0 && (
+              <div>
+                <div className="text-xs text-slate-600 uppercase tracking-wider mb-2">By Stage</div>
+                <div className="flex flex-col gap-1.5">
+                  {stages.map(([stage, info]) => (
+                    <div key={stage} className="flex items-center justify-between text-xs bg-surface-2 rounded px-3 py-2">
+                      <span className={`px-2 py-0.5 rounded ${STAGE_COLOR[stage] ?? 'bg-slate-500/20 text-slate-400'}`}>
+                        {stage}
+                      </span>
+                      <span className="text-slate-400">{info.count} deals · {fmt(info.value, true)}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* Right — top opportunities */}
           {metrics.topOpportunities.length > 0 && (
             <div>
-              <div className="text-xs text-slate-600 uppercase tracking-wider mb-1.5">Top Opportunities</div>
-              <div className="flex flex-col gap-1">
-                {metrics.topOpportunities.slice(0, 4).map(opp => (
-                  <div key={opp.id} className="flex items-center justify-between text-xs">
-                    <span className="text-slate-300 truncate flex-1 mr-2">{opp.name}</span>
-                    <span className="text-emerald-400 font-mono flex-shrink-0">{fmt(opp.monetaryValue ?? 0, true)}</span>
+              <div className="text-xs text-slate-600 uppercase tracking-wider mb-2">Top Opportunities</div>
+              <div className="flex flex-col gap-1.5">
+                {metrics.topOpportunities.map(opp => (
+                  <div key={opp.id} className="flex items-center justify-between bg-surface-2 rounded px-3 py-2.5 text-xs">
+                    <div className="min-w-0 flex-1 mr-3">
+                      <div className="text-slate-200 truncate font-medium">{opp.name}</div>
+                      {opp.contact?.name && (
+                        <div className="text-slate-600 mt-0.5 truncate">{opp.contact.name}</div>
+                      )}
+                    </div>
+                    <div className="flex-shrink-0 text-right">
+                      <div className="text-emerald-400 font-mono font-semibold">{fmt(opp.monetaryValue ?? 0, true)}</div>
+                      <div className="text-[10px] text-slate-600 mt-0.5">{opp.status}</div>
+                    </div>
                   </div>
                 ))}
               </div>

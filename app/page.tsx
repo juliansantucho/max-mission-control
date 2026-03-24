@@ -2,7 +2,6 @@ import { getGHLContacts, getGHLPipelineSummary } from '@/lib/ghl'
 import { getCalendlyEvents } from '@/lib/calendly'
 import { getMakeScenarios } from '@/lib/make'
 import { createServiceClient, hasSupabase } from '@/lib/supabase/service'
-import Header from '@/components/Header'
 import DashboardClient from '@/components/DashboardClient'
 import type { DashboardData, AgentStatus, Financial, Alert, TelegramMessage, AutomationStatus } from '@/types'
 
@@ -104,12 +103,5 @@ export default async function Page() {
     hasSupabase: supabaseAvailable,
   }
 
-  return (
-    <div className="flex flex-col h-screen overflow-hidden bg-surface-0">
-      <Header />
-      <main className="flex-1 overflow-auto">
-        <DashboardClient data={data} />
-      </main>
-    </div>
-  )
+  return <DashboardClient data={data} />
 }

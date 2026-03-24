@@ -47,9 +47,9 @@ export default function AgentStatusPanel({ initial, hasSupabase }: { initial: Ag
           {hasSupabase ? 'No agents yet — send a POST /api/agent/heartbeat' : '⚠ Supabase not configured — add env vars to see live agent status'}
         </p>
       ) : (
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
           {agents.map(a => (
-            <div key={a.id} className="bg-surface-2 rounded-lg p-3 flex gap-3">
+            <div key={a.id} className="bg-surface-2 rounded-lg p-4 flex gap-3">
               <div className={`w-2 h-2 rounded-full mt-1.5 flex-shrink-0 ${S_COLOR[a.status]} ${a.status === 'online' ? 'status-pulse' : ''}`} />
               <div className="min-w-0 flex-1">
                 <div className="flex items-center justify-between">
