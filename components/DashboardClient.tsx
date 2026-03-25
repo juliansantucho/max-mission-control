@@ -36,10 +36,6 @@ export default function DashboardClient({ data }: { data: DashboardData }) {
       <div className="flex flex-1 overflow-hidden">
         {/* SIDEBAR */}
         <aside className="w-[220px] flex-shrink-0 bg-surface-0 border-r border-surface-3 flex flex-col py-5 px-3 overflow-y-auto">
-          <div className="flex items-center gap-2 px-2 mb-6">
-            <span className="text-[#6366f1] text-lg">⚡</span>
-            <span className="font-bold text-sm tracking-widest text-slate-200 uppercase">Mission Control</span>
-          </div>
 
           <nav className="flex flex-col gap-1 flex-1">
             {TABS.map((tab) => (
