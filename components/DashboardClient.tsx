@@ -14,7 +14,7 @@ import DailyHabitsPanel from './panels/DailyHabitsPanel'
 import type { DashboardData } from '@/types'
 
 const TABS = [
-  { id: 'agent',       icon: '🤖', label: 'Agent Status' },
+  { id: 'agent',       icon: '🤖', label: 'AI Team' },
   { id: 'business',    icon: '📊', label: 'Business Metrics' },
   { id: 'financial',   icon: '💰', label: 'Financial Overview' },
   { id: 'calendar',    icon: '📅', label: 'Calendar & Pipeline' },
