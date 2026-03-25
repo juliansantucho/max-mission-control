@@ -1,7 +1,7 @@
 export interface AgentStatus {
   id: string
   agent_name: string
-  status: 'online' | 'offline' | 'error' | 'idle'
+  status: 'online' | 'offline' | 'error' | 'idle' | 'active' | 'paused' | 'onboarding'
   current_task: string | null
   tasks_in_queue: number
   metadata: { uptime_minutes?: number; model?: string; gateway_port?: number; [k: string]: unknown }
